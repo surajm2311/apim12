@@ -1,0 +1,172 @@
+
+
+Step 1> 
+  # systemctl stop firewalld
+  # systemctl disable firewalld
+  
+  service avahi-daemon status
+  service avahi-daemon stop
+  chkconfig avahi-daemon off
+  
+  service ntpd status
+  service ntpd off
+  
+vi /etc/selinux/config  (Make it disable or Permisive)
+
+systemctl enable --now chronyd
+
+STEP 2>
+
+   ssh-keygen
+   cd .ssh
+   touch authorized_keys
+cat the pub and enterchange the content of pub unformation in each node
+
+STEP 3>
+oracle-database-ee-19c-1.0-1.x86_64.rpm
+
+STEP 4>
+
+  Create grid user for GRID INFRASTRUCTURE
+  UserName-grid
+  Group Name 
+  -g oinstall -G dba,oper,
+  backupdba,
+  dgdba,kmdba,asmdba,
+  asmoper,asmadmin,
+  racdba
+  
+STEP 5>
+   
+   Create raw disk only 
+   ===============
+   oracleasm configure -i
+   oracleasm init
+   oracleasm create disk
+   oracleasm createdisk CRS1 /dev/mapper/mpatha1
+   oracleasm createdisk CRS2 /dev/mapper/mpathb1
+   oracleasm createdisk CRS3 /dev/mapper/mpathc1
+
+  # oracleasm createdisk REDO1 /dev/mapper/mpatha1
+  # oracleasm createdisk REDO2 /dev/mapper/mpathb1
+  # oracleasm createdisk REDO3 /dev/mapper/mpathc1
+   
+   Check on node2
+   ==============
+   oracleasm scandisks
+   oracleasm listdisks
+
+STEP 6>
+ 
+   mkdir -p /u01/app/oracle/grid
+   
+STEP 7>   
+   unzip the grid binary here
+   
+STEP 8>
+  Install RPM
+  location===grid_home/cv/rpm  (Root User)
+  rpm -ivh rpm -ivh cvuqdisk-1.0.10-1.rpm
+  cp the rpm to dcoradbpr02 and install
+  
+STEP 9>
+   After Hardware installation use below script for checking
+  export CV_ASSUME_DISTID=OEL7.9
+  ./runcluvfy.sh stage -post hwos -n dcoradbpr01,dcoradbpr02 -verbose
+  
+STEP 10>
+    export CV_ASSUME_DISTID=OEL7.9
+    ./runcluvfy.sh stage -pre crsinst -n rnode1,rnode2 -r 19 -osdba dba -orainv oinstall -asmdev /dev/oracleasm/disks/* -asm -asmgrp dba -crshome /u01/app/oracle/19.3/grid -method root -verbose -fixupnoexec
+
+STEP 11>
+
+/u01/app/oracle/19.3/grid/gridSetup.sh -silent -responseFile /u01/app/oracle/grid/install/response/gridsetup.rsp -ignorePrereqFailure 		 \
+INVENTORY_LOCATION=/u01/app/oraInventory                                                                                         \
+oracle.install.option=CRS_CONFIG                                                                                                 \
+ORACLE_BASE=/u01/app/oracle/19.3                                                                                                      \
+oracle.install.asm.OSDBA=racdba                                                                                                  \
+oracle.install.asm.OSOPER=dba                                                                                                    \
+oracle.install.asm.OSASM=oper                                                                                                    \
+oracle.install.crs.config.scanType=LOCAL_SCAN                                                                                    \
+oracle.install.crs.config.gpnp.scanName=dcoradbpr-scan                                                                               \
+oracle.install.crs.config.gpnp.scanPort=15210                                                                                     \
+oracle.install.crs.config.ClusterConfiguration=STANDALONE                                                                        \
+oracle.install.crs.config.clusterName=apim-cls                                                                                   \
+oracle.install.crs.config.clusterNodes=dcoradbpr01:dcoradbpr01-vip,dcoradbpr02:dcoradbpr02-vip                                                       \
+oracle.install.crs.config.networkInterfaceList=en07:10.142.15.0:1,en08:10.142.1.0:5                                      \
+oracle.install.crs.configureGIMR=false                                                                                           \
+oracle.install.crs.config.storageOption=FLEX_ASM_STORAGE                                                                         \
+oracle.install.asm.SYSASMPassword=grididbi123                                                                                      \
+oracle.install.asm.diskGroup.name=CRS                                                                                           \
+oracle.install.asm.diskGroup.redundancy=EXTERNAL                                                                                 \
+oracle.install.asm.diskGroup.AUSize=4                                                                                            \
+oracle.install.asm.diskGroup.disks=/dev/mapper/mpatha1/CRS1,/dev/mapper/mpathb1/CRS2,/dev/mapper/mpathc1/CRS3                    \
+oracle.install.asm.diskGroup.diskDiscoveryString=/dev/oracleasm/disks/*                                                          \
+oracle.install.asm.monitorPassword=grididbi123                                                                                     \
+oracle.install.asm.configureAFD=false
+
+
+orainstroot.sh 
+root.sh
+
+
+grid_final_cong only
+
+
+
+/u01/app/oracle/19.3/grid/gridSetup.sh -executeConfigTools -all -silent -responseFile /u01/app/oracle/19.3/grid/grid/install/response/gridsetup.rsp  \
+INVENTORY_LOCATION=/u01/app/oraInventory                                                                                         \
+oracle.install.option=CRS_CONFIG                                                                                                 \
+ORACLE_BASE=/u01/app/oracle/19.3                                                                                                      \
+oracle.install.asm.OSDBA=racdba                                                                                                  \
+oracle.install.asm.OSOPER=dba                                                                                                    \
+oracle.install.asm.OSASM=oper                                                                                                    \
+oracle.install.crs.config.scanType=LOCAL_SCAN                                                                                    \
+oracle.install.crs.config.gpnp.scanName=dcoradbpr-scan                                                                               \
+oracle.install.crs.config.gpnp.scanPort=15210                                                                                     \
+oracle.install.crs.config.ClusterConfiguration=STANDALONE                                                                        \
+oracle.install.crs.config.clusterName=apim-cls                                                                                   \
+oracle.install.crs.config.clusterNodes=dcoradbpr01:dcoradbpr01-vip,dcoradbpr02:dcoradbpr02-vip                                                       \
+oracle.install.crs.config.networkInterfaceList=en07:10.142.15.0:1,en08:10.142.1.0:5                                      \
+oracle.install.crs.configureGIMR=false                                                                                           \
+oracle.install.crs.config.storageOption=FLEX_ASM_STORAGE                                                                         \
+oracle.install.asm.SYSASMPassword=grididbi123                                                                                      \
+oracle.install.asm.diskGroup.name=CRS                                                                                           \
+oracle.install.asm.diskGroup.redundancy=EXTERNAL                                                                                 \
+oracle.install.asm.diskGroup.AUSize=4                                                                                            \
+oracle.install.asm.diskGroup.disks=/dev/mapper/mpatha1/CRS1,/dev/mapper/mpathb1/CRS2,/dev/mapper/mpathc1/CRS3                    \
+oracle.install.asm.diskGroup.diskDiscoveryString=/dev/oracleasm/disks/*                                                          \
+oracle.install.asm.monitorPassword=grididbi123                                                                                     \
+oracle.install.asm.configureAFD=false
+
+
+==================================================================================================
+STEP 12> Installa Database Binary Only
+
+/u01/app/oracle/product/19.3.0.0/db_1/runInstaller -silent -responsefile /u01/app/oracle/product/19.3.0.0/db_1/install/response/db_install.rsp -waitforcompletion -ignorePrereqFailure \
+oracle.install.option=INSTALL_DB_SWONLY                                            \
+UNIX_GROUP_NAME=oinstall                                                           \
+INVENTORY_LOCATION=/u01/app/oraInventory                                           \
+ORACLE_HOME=/u01/app/oracle/product/19.3.0.0/db_1                                  \
+ORACLE_BASE=/u01/app/oracle                                                        \
+oracle.install.db.InstallEdition=EE                                                \
+oracle.install.db.OSDBA_GROUP=dba                                                  \
+oracle.install.db.OSOPER_GROUP=dba                                                 \
+oracle.install.db.OSBACKUPDBA_GROUP=dba                                            \
+oracle.install.db.OSDGDBA_GROUP=dba                                                \
+oracle.install.db.OSKMDBA_GROUP=dba                                                \
+oracle.install.db.OSRACDBA_GROUP=dba                                               \
+oracle.install.db.CLUSTER_NODES=rnode1,rnode2
+
+
+
+=================================================
+
+Create Database Silent
+
+/u01/app/oracle/product/19.3.0.0/db_1/bin/dbca -silent -ignorePrereqFailure \
+-createDatabase -templateName General_Purpose.dbc \
+-gdbName IDBIRDB -characterSet AL32UTF8 -databaseConfigType RAC \
+-datafileDestination +DATA -totalMemory 2048 -nationalCharacterSet AL16UTF16 \
+-nodelist rnode1,rnode2 -adminManaged -recoveryAreaSize 20480 \
+-sid IDBIRDB -sysPassword Oracle123 -systemPassword Oracle123 -useOMF true
