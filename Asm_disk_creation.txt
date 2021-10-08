@@ -1,0 +1,41 @@
+
+
+Check on node2
+==============
+oracleasm scandisks
+oracleasm listdisks
+
+
+=========================
+
+
+oracleasm configure -i
+oracleasm init
+
+oracleasm createdisk REDO1A /dev/mapper/mpatha2
+oracleasm createdisk REDO1B /dev/mapper/mpathb2
+oracleasm createdisk REDO1C /dev/mapper/mpathc2
+
+oracleasm createdisk REDO2A /dev/mapper/mpathd1
+oracleasm createdisk REDO2B /dev/mapper/mpathe1
+oracleasm createdisk REDO2C /dev/mapper/mpathf1
+
+oracleasm createdisk DATA1 /dev/mapper/mpatha3
+oracleasm createdisk DATA2 /dev/mapper/mpathb3
+oracleasm createdisk DATA3 /dev/mapper/mpathc3
+
+oracleasm createdisk DATA4 /dev/mapper/mpathd2
+oracleasm createdisk DATA5 /dev/mapper/mpathe2
+oracleasm createdisk DATA6 /dev/mapper/mpathf2
+
+
+oracleasm createdisk FRA1 /dev/mapper/mpathd3
+oracleasm createdisk FRA2 /dev/mapper/mpathe3
+oracleasm createdisk FRA3 /dev/mapper/mpathf3
+
+
+
+
+
+
+
